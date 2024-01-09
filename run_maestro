@@ -1,0 +1,45 @@
+#!/bin/bash
+file_path="./" 
+timeout_count=500
+interval=10
+timeout_error="time out error"
+pdbid=$1
+ligandname=$2
+
+
+# prepare pdb
+
+
+prepwizard -delwater_hbond_cutoff 3 ${pdbid}.pdb minimize.pdb
+file_path="./minimize.pdb" 
+
+
+for ((i=1; i<=${timeout_count}; i ++))
+do
+    if [ -e "$file_path" ]; then
+        echo "prepare finish"
+        break
+    else
+    	echo "preparing"
+    	sleep $interval
+    fi
+done
+
+
+if [ ${i} -eq ${timeout_count} ]; then
+
+	echo "$timeout_error"
+	exit 1
+fi
+
+
+
+
+echo ${pdbfile} ${lignadname}
+# process ligand
+
+
+cat minimize.pdb |grep ${ligandname} > ligand.pdb
+cat minimize.pdb |grep ATOM > protein.pdb
+structconvert -ipdb ligand.pdb -osd ligand.sdf
+
