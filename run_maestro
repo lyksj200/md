@@ -4,11 +4,8 @@ timeout_count=500
 interval=10
 timeout_error="time out error"
 pdbid=$1
-ligandname=$2
-
 
 # prepare pdb
-
 
 prepwizard -delwater_hbond_cutoff 3 ${pdbid}.pdb minimize.pdb
 file_path="./minimize.pdb" 
@@ -34,12 +31,19 @@ fi
 
 
 
+cat minimize.pdb |grep ATOM > protein.pdb
 
-echo ${pdbfile} ${lignadname}
 # process ligand
 
-
-cat minimize.pdb |grep ${ligandname} > ligand.pdb
-cat minimize.pdb |grep ATOM > protein.pdb
-structconvert -ipdb ligand.pdb -osd ligand.sdf
-
+i=0
+for var in $@
+do
+	i=$((i + 1))
+	if [ $i -eq 1 ];then
+		continue
+	fi
+	file_id="$var"
+	echo ligand id is ${file_id}
+	cat minimize.pdb |grep ${file_id} > ${file_id}.pdb
+	structconvert -ipdb ${file_id}.pdb -osd ${file_id}.sdf
+done
