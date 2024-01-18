@@ -5,6 +5,11 @@ interval=10
 timeout_error="time out error"
 pdbid=$1
 
+# usage：
+# using prepwizard to preprocess protein and ligand for MD prepare
+# ./run_maestro.sh pdbid ligandid_1 ligandid_2 ...
+
+
 # prepare pdb
 
 prepwizard -delwater_hbond_cutoff 3 ${pdbid}.pdb minimize.pdb
